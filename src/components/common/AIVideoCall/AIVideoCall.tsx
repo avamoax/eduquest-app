@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { getSmartAIResponse } from '@/utils/smartAI';
-import { createOpenAIService } from '@/services/openai';
+import { askChatGPT, ChatMessage } from '@/services/openai';
 
 interface Message {
   id: string;
@@ -25,7 +24,8 @@ export default function AIVideoCall({ onClose }: AIVideoCallProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [usingChatGPT, setUsingChatGPT] = useState(false);
+  const [usingChatGPT, setUsingChatGPT] = useState(true);
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -36,33 +36,17 @@ export default function AIVideoCall({ onClose }: AIVideoCallProps) {
     scrollToBottom();
   }, [messages]);
 
-  // AI response function - uses ChatGPT with smart fallback
+  // AI response function - uses real ChatGPT
   const getAIResponse = async (question: string): Promise<string> => {
-    try {
-      // Try to use ChatGPT first
-      const openAIService = createOpenAIService();
-      
-      if (openAIService) {
-        console.log('🤖 Using ChatGPT for response...');
-        setUsingChatGPT(true);
-        
-        const chatGPTResponse = await openAIService.getChatResponse(question);
-        
-        if (chatGPTResponse && chatGPTResponse.trim()) {
-          return `🤖 ${chatGPTResponse.trim()}`;
-        }
-      }
-      
-      // Fallback to our smart AI system if ChatGPT fails or no API key
-      console.log('📚 Using smart fallback system...');
-      setUsingChatGPT(false);
-      return getSmartAIResponse(question);
-      
-    } catch (error) {
-      console.log('AI error, using smart fallback:', error);
-      setUsingChatGPT(false);
-      return getSmartAIResponse(question);
-    }
+    const ageGroup = localStorage.getItem('userAgeGroup') || '8-10';
+    const response = await askChatGPT(question, ageGroup, chatHistory);
+    // Update conversation history
+    setChatHistory(prev => [
+      ...prev,
+      { role: 'user', content: question },
+      { role: 'assistant', content: response }
+    ]);
+    return response;
   };
 
 

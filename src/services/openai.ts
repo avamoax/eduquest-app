@@ -1,95 +1,96 @@
-// OpenAI API Service for ChatGPT Integration
+const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 
-interface OpenAIMessage {
-  role: 'system' | 'user' | 'assistant';
+export interface ChatMessage {
+  role: 'user' | 'assistant' | 'system';
   content: string;
 }
 
-interface OpenAIResponse {
-  choices: {
-    message: {
-      content: string;
-    };
-  }[];
-}
-
-export class OpenAIService {
-  private apiKey: string;
-  private baseURL = 'https://api.openai.com/v1/chat/completions';
-
-  constructor(apiKey: string) {
-    this.apiKey = apiKey;
+export const askChatGPT = async (
+  userMessage: string,
+  ageGroup: string = '8-10',
+  conversationHistory: ChatMessage[] = []
+): Promise<string> => {
+  if (!OPENAI_API_KEY || OPENAI_API_KEY === 'sk-your-new-key-here') {
+    return getFallbackResponse(userMessage);
   }
 
-  async getChatResponse(userMessage: string): Promise<string> {
-    try {
-      const messages: OpenAIMessage[] = [
-        {
-          role: 'system',
-          content: `You are EduBot, a friendly AI tutor for kids aged 8-12. Your responses should be:
-- Educational and age-appropriate
-- Fun and engaging with emojis
-- Under 200 words
-- Encouraging and positive
-- Safe for children
-- Include examples when explaining concepts
-- Use simple language they can understand
+  try {
+    const systemPrompt = `You are EduQuest AI Tutor - a friendly, encouraging teacher for children aged ${ageGroup} years.
 
-Always try to teach something while answering their question. If they ask something inappropriate, gently redirect to educational topics.`
-        },
-        {
-          role: 'user',
-          content: userMessage
-        }
-      ];
+Your personality:
+- Warm, patient and enthusiastic
+- Use simple words kids understand
+- Add emojis to make responses fun 🌟
+- Keep answers short (2-4 sentences max)
+- Always encourage and motivate
+- Never use scary or complex language
 
-      const response = await fetch(this.baseURL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.apiKey}`
-        },
-        body: JSON.stringify({
-          model: 'gpt-3.5-turbo',
-          messages: messages,
-          max_tokens: 300,
-          temperature: 0.7,
-          presence_penalty: 0.1,
-          frequency_penalty: 0.1
-        })
-      });
+You help with:
+- English, Hindi and Marathi language learning
+- Math problems
+- Science questions  
+- General knowledge
+- Explaining quiz answers
 
-      if (!response.ok) {
-        throw new Error(`OpenAI API error: ${response.status}`);
-      }
+Always respond in the same language the child uses (English/Hindi/Marathi).
+If a child seems frustrated, be extra encouraging.`;
 
-      const data: OpenAIResponse = await response.json();
-      return data.choices[0]?.message?.content || 'I had trouble understanding that. Could you ask me something else?';
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${OPENAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          ...conversationHistory.slice(-6), // Keep last 6 messages for context
+          { role: 'user', content: userMessage }
+        ],
+        max_tokens: 150,
+        temperature: 0.7
+      })
+    });
 
-    } catch (error) {
-      console.error('OpenAI API Error:', error);
-      throw error;
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
     }
-  }
-}
 
-// Environment variable helper
-export const getOpenAIApiKey = (): string | null => {
-  // Try different environment variable names
-  return (
-    process.env.REACT_APP_OPENAI_API_KEY ||
-    process.env.VITE_OPENAI_API_KEY ||
-    process.env.OPENAI_API_KEY ||
-    null
-  );
+    const data = await response.json();
+    return data.choices[0].message.content;
+
+  } catch (error) {
+    console.error('ChatGPT error:', error);
+    return getFallbackResponse(userMessage);
+  }
 };
 
-// Create OpenAI service instance
-export const createOpenAIService = (): OpenAIService | null => {
-  const apiKey = getOpenAIApiKey();
-  if (!apiKey) {
-    console.warn('OpenAI API key not found. Using fallback responses.');
-    return null;
+// Smart fallback when API is unavailable
+const getFallbackResponse = (message: string): string => {
+  const msg = message.toLowerCase();
+
+  if (msg.includes('hello') || msg.includes('hi') || msg.includes('नमस्ते') || msg.includes('नमस्कार')) {
+    return "Hello! 👋 I'm your EduQuest AI Tutor! I'm here to help you learn. What would you like to know today? 🌟";
   }
-  return new OpenAIService(apiKey);
+  if (msg.includes('math') || msg.includes('maths') || msg.includes('number') || msg.includes('गणित')) {
+    return "Great question about math! 🔢 Math is all about patterns and logic. Try breaking the problem into smaller steps. You can do it! 💪";
+  }
+  if (msg.includes('english') || msg.includes('grammar') || msg.includes('word')) {
+    return "English is fun to learn! 📚 Practice reading every day and your skills will grow. Keep asking questions! ⭐";
+  }
+  if (msg.includes('hindi') || msg.includes('हिंदी')) {
+    return "हिंदी सीखना बहुत अच्छा है! 🌟 रोज़ थोड़ा-थोड़ा पढ़ो और तुम जल्दी सीख जाओगे! 💪";
+  }
+  if (msg.includes('marathi') || msg.includes('मराठी')) {
+    return "मराठी शिकणे खूप छान आहे! 🌟 दररोज थोडे थोडे वाचा आणि तुम्ही लवकर शिकाल! 💪";
+  }
+  if (msg.includes('help') || msg.includes('मदद') || msg.includes('मदत')) {
+    return "I'm here to help you! 🤗 Ask me anything about your studies - English, Hindi, Marathi, Math or Science. Let's learn together! 🚀";
+  }
+  if (msg.includes('thank') || msg.includes('धन्यवाद') || msg.includes('आभार')) {
+    return "You're welcome! 😊 Keep up the great work! Learning every day makes you smarter. You're doing amazing! 🌟";
+  }
+
+  return "That's a great question! 🤔 I'm here to help you learn. Try exploring the subjects on the home page, or ask me something specific about English, Hindi, Marathi, Math or Science! 📚✨";
 };
