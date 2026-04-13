@@ -9,29 +9,43 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+      includeAssets: ['favicon.ico', 'icons/icon.svg'],
       manifest: {
-        name: 'EduQuest',
+        name: 'EduQuest - Level Up Learning',
         short_name: 'EduQuest',
-        description: 'Gamified education Progressive Web App for children',
+        description: 'Fun & safe learning app for kids - English, Hindi & Marathi quizzes!',
         theme_color: '#6366F1',
-        background_color: '#ffffff',
+        background_color: '#EEF2FF',
         display: 'standalone',
+        orientation: 'portrait',
+        start_url: '/',
+        scope: '/',
+        categories: ['education', 'kids'],
         icons: [
           {
-            src: 'icons/icon-192x192.png',
-            sizes: '192x192',
-            type: 'image/png'
-          },
+            src: 'icons/icon.svg',
+            sizes: 'any',
+            type: 'image/svg+xml',
+            purpose: 'any maskable'
+          }
+        ],
+        screenshots: [
           {
-            src: 'icons/icon-512x512.png',
+            src: 'icons/icon.svg',
             sizes: '512x512',
-            type: 'image/png'
+            type: 'image/svg+xml'
           }
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}']
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: { cacheName: 'google-fonts-cache' }
+          }
+        ]
       }
     })
   ],
