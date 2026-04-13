@@ -1,0 +1,65 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F8FBFF"/>
+      <stop offset="100%" stop-color="#E7F1FF"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#9CCBFF"/>
+      <stop offset="100%" stop-color="#6EB5FF"/>
+    </linearGradient>
+    <linearGradient id="darkBlue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4F8BFF"/>
+      <stop offset="100%" stop-color="#2F6ED6"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.4" r="0.8">
+      <stop offset="0%" stop-color="#BFE4FF" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#7BB2FF" stop-opacity="0.2"/>
+    </radialGradient>
+  </defs>
+
+  <g filter="url(#shadow)">
+    <!-- Head -->
+    <rect x="126" y="72" width="260" height="180" rx="80" fill="url(#body)" stroke="#A9D6FF" stroke-width="10"/>
+    <rect x="156" y="112" width="200" height="110" rx="26" fill="#0B1724"/>
+
+    <!-- Screen corners -->
+    <rect x="166" y="122" width="14" height="14" rx="3" fill="#3CC8FF"/>
+    <rect x="346" y="122" width="14" height="14" rx="3" fill="#3CC8FF"/>
+    <rect x="166" y="198" width="14" height="14" rx="3" fill="#3CC8FF"/>
+    <rect x="346" y="198" width="14" height="14" rx="3" fill="#3CC8FF"/>
+
+    <!-- Eyes -->
+    <path d="M210 170 C225 185 240 185 255 170" stroke="#8EE5FF" stroke-width="10" stroke-linecap="round" fill="none"/>
+    <path d="M265 170 C280 185 295 185 310 170" stroke="#8EE5FF" stroke-width="10" stroke-linecap="round" fill="none"/>
+
+    <!-- Ears -->
+    <ellipse cx="126" cy="160" rx="22" ry="36" fill="url(#body)" stroke="#A9D6FF" stroke-width="10"/>
+    <ellipse cx="386" cy="160" rx="22" ry="36" fill="url(#body)" stroke="#A9D6FF" stroke-width="10"/>
+
+    <!-- Antenna -->
+    <rect x="240" y="52" width="32" height="28" rx="12" fill="url(#blue)"/>
+    <circle cx="256" cy="42" r="12" fill="#8EE5FF" stroke="#4F8BFF" stroke-width="4"/>
+
+    <!-- Body -->
+    <rect x="146" y="220" width="220" height="210" rx="90" fill="url(#body)" stroke="#A9D6FF" stroke-width="10"/>
+    <rect x="192" y="280" width="128" height="120" rx="60" fill="url(#blue)"/>
+    <circle cx="256" cy="282" r="20" fill="#DFF2FF"/>
+
+    <!-- Arms -->
+    <ellipse cx="136" cy="280" rx="34" ry="70" fill="url(#body)" stroke="#A9D6FF" stroke-width="10"/>
+    <ellipse cx="376" cy="280" rx="34" ry="70" fill="url(#body)" stroke="#A9D6FF" stroke-width="10"/>
+
+    <!-- Legs -->
+    <ellipse cx="210" cy="414" rx="34" ry="22" fill="url(#darkBlue)"/>
+    <ellipse cx="302" cy="414" rx="34" ry="22" fill="url(#darkBlue)"/>
+
+    <!-- Glow -->
+    <ellipse cx="256" cy="300" rx="140" ry="70" fill="url(#glow)" opacity="0.5"/>
+  </g>
+
+  <filter id="shadow" x="0" y="0" width="512" height="512" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+    <feDropShadow dx="0" dy="8" stdDeviation="18" flood-color="#4F8BFF" flood-opacity="0.25"/>
+  </filter>
+</svg>
+

@@ -1,0 +1,28 @@
+export const ROUTES = {
+  AUTH: '/auth',
+  AGE_SELECTION: '/age-selection',
+  ONBOARDING: '/onboarding',
+  HOME: '/home',
+  SUBJECTS: '/subjects',
+  TUTOR: '/tutor',
+  SUBJECT_DETAIL: (subjectId: string) => `/subject/${subjectId}`,
+  SUBJECT_PROGRESS: (subjectId?: string) => 
+    subjectId ? `/progress/${subjectId}` : '/progress',
+  LESSONS: (subject: string) => `/lessons/${subject}`,
+  LESSON: (id: string) => `/lesson/${id}`,
+  QUIZ_SESSION: (subject?: string) => subject ? `/quiz/${subject}` : '/quiz/daily',
+  QUIZ_RESULTS: (id: string) => `/quiz-results/${id}`,
+  SUBJECT_CONTENT: (subjectId: string) => `/subject-content/${subjectId}`,
+  PET_CARE: '/pet-care',
+  CHALLENGES: '/challenges',
+  PROGRESS: '/progress',
+  PROFILE: '/profile',
+  SETTINGS: '/settings',
+  PARENT_DASHBOARD: '/parent-dashboard',
+  DAY_STREAK: '/day-streak',
+  QUESTIONS: '/questions',
+  ACCURACY: '/accuracy',
+  CONTACTS: '/contacts',
+  AI_ASSISTANT: '/ai-assistant',
+} as const;
+
