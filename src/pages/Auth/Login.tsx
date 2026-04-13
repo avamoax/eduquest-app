@@ -4,6 +4,7 @@ import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPass
 import { auth, googleProvider } from '@/config/firebase';
 import { ROUTES } from '@/config/routes';
 import { saveUser } from '@/services/firestore';
+import { sendWelcomeEmail } from '@/services/emailService';
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
@@ -39,7 +40,15 @@ export default function Login() {
     setIsLoading(true);
     try {
       const result = await signInWithPopup(auth, googleProvider);
+      const isNewUser = result.user.metadata.creationTime === result.user.metadata.lastSignInTime;
       await saveUser(result.user);
+      // Send welcome email only for new users
+      if (isNewUser) {
+        await sendWelcomeEmail(
+          result.user.email || '',
+          result.user.displayName || 'Learner'
+        );
+      }
       setUser(result.user);
       setIsLoading(false);
     } catch (err: any) {
@@ -67,6 +76,8 @@ export default function Login() {
         const result = await createUserWithEmailAndPassword(auth, email, password);
         await updateProfile(result.user, { displayName: name });
         await saveUser(result.user);
+        // Send welcome email for new email signups
+        await sendWelcomeEmail(email, name);
         setUser(result.user);
       }
       setIsLoading(false);
