@@ -232,16 +232,16 @@ export default function AIVideoCall({ onClose }: AIVideoCallProps) {
               {/* Quick Suggestions */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-2xl">
                 {[
-                  { icon: '📚', title: 'Explain concepts', desc: 'Help me understand algebra' },
-                  { icon: '🔬', title: 'Science help', desc: 'How does photosynthesis work?' },
-                  { icon: '✍️', title: 'Writing help', desc: 'Check my essay grammar' },
-                  { icon: '🧮', title: 'Solve problems', desc: 'What is 15 × 8?' },
+                  { icon: '📚', title: 'English Help', desc: 'What is a noun?' },
+                  { icon: '🇮🇳', title: 'Hindi Help', desc: 'सूरज का समानार्थी शब्द क्या है?' },
+                  { icon: '📝', title: 'Marathi Help', desc: 'मोर कोणता पक्षी आहे?' },
+                  { icon: '🔢', title: 'Maths Help', desc: 'What is 15 × 8?' },
+                  { icon: '🔬', title: 'Science Help', desc: 'How does photosynthesis work?' },
+                  { icon: '🌍', title: 'General Knowledge', desc: 'What is the capital of India?' },
                 ].map((item, idx) => (
                   <button
                     key={idx}
-                    onClick={() => {
-                      setInputValue(item.desc);
-                    }}
+                    onClick={() => setInputValue(item.desc)}
                     className="text-left p-4 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
                   >
                     <p className="font-semibold text-gray-900">{item.icon} {item.title}</p>
