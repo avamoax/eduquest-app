@@ -24,7 +24,7 @@ export default function AIVideoCall({ onClose }: AIVideoCallProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [usingChatGPT, setUsingChatGPT] = useState(true);
+  const [usingChatGPT] = useState(true);
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
