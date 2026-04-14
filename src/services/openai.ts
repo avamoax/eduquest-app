@@ -10,12 +10,40 @@ export const askChatGPT = async (
   ageGroup: string = '8-10',
   conversationHistory: ChatMessage[] = []
 ): Promise<string> => {
-  if (!OPENAI_API_KEY || OPENAI_API_KEY === 'sk-your-new-key-here') {
-    return getFallbackResponse(userMessage);
-  }
-
+  // Always try ChatGPT first
   try {
-    const systemPrompt = `You are EduQuest AI Tutor - a friendly, encouraging teacher for children aged ${ageGroup} years.
+    const systemPrompt = `You are EduQuest AI Tutor - a friendly, encouraging teacher for children aged ${ageGroup} years. Answer ANY question directly and helpfully. Use simple words, add emojis, keep answers to 3-4 sentences. Always respond in the same language the child uses.`;
+
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${OPENAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          ...conversationHistory.slice(-6),
+          { role: 'user', content: userMessage }
+        ],
+        max_tokens: 200,
+        temperature: 0.7
+      })
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.choices[0].message.content;
+    }
+    
+    throw new Error(`API error: ${response.status}`);
+
+  } catch (error) {
+    console.error('ChatGPT error:', error);
+    return `I'm having trouble connecting right now. The answer to "${userMessage}" - please try again in a moment! 🤖`;
+  }
+};
 
 Your personality:
 - Warm, patient and enthusiastic
